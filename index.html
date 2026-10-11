@@ -1,0 +1,917 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Школьный проект о дипфейках и способах распознавания изображений, созданных искусственным интеллектом.">
+<title>Цифровой детектив — как распознать дипфейк</title>
+
+<style>
+:root {
+    --navy: #14243a;
+    --blue: #2864dc;
+    --cyan: #65d8e8;
+    --paper: #f5f7fb;
+    --ink: #1c2940;
+    --muted: #637087;
+    --green: #19866a;
+    --red: #d65353;
+    --white: #ffffff;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.7;
+}
+
+a {
+    color: inherit;
+}
+
+button {
+    font: inherit;
+    cursor: pointer;
+}
+
+.container {
+    width: min(1120px, 90%);
+    margin: auto;
+}
+
+header {
+    background: var(--navy);
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 4px 20px #101d3020;
+}
+
+.navbar {
+    min-height: 76px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.logo {
+    color: var(--cyan);
+    font-size: 21px;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 19px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #e0e8f5;
+    font-size: 14px;
+}
+
+nav a:hover {
+    color: var(--cyan);
+}
+
+.hero {
+    color: white;
+    background:
+        radial-gradient(circle at 85% 25%, #3679d96b, transparent 30%),
+        linear-gradient(135deg, #14243a, #203e65);
+    padding: 100px 0 90px;
+    overflow: hidden;
+}
+
+.eyebrow {
+    display: inline-block;
+    padding: 6px 13px;
+    border: 1px solid #ffffff45;
+    border-radius: 30px;
+    color: var(--cyan);
+    font-size: 13px;
+    margin-bottom: 22px;
+}
+
+.hero h1 {
+    font-size: clamp(36px, 6vw, 66px);
+    line-height: 1.12;
+    max-width: 820px;
+    margin-bottom: 25px;
+    letter-spacing: -1.5px;
+}
+
+.hero h1 span {
+    color: var(--cyan);
+}
+
+.hero p {
+    max-width: 680px;
+    color: #d4deed;
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+.btn {
+    display: inline-block;
+    border: none;
+    border-radius: 12px;
+    padding: 13px 22px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: .2s;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn-primary {
+    background: var(--cyan);
+    color: var(--navy);
+}
+
+.btn-secondary {
+    border: 1px solid #ffffff66;
+    color: white;
+    margin-left: 8px;
+}
+
+.hero-note {
+    margin-top: 35px;
+    font-size: 13px;
+    color: #c1d0e5;
+}
+
+section {
+    padding: 76px 0;
+    scroll-margin-top: 90px;
+}
+
+.section-label {
+    color: var(--blue);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 12px;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.section-title {
+    font-size: clamp(28px, 4vw, 42px);
+    line-height: 1.2;
+    margin-bottom: 18px;
+}
+
+.section-intro {
+    max-width: 760px;
+    color: var(--muted);
+    margin-bottom: 35px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px;
+}
+
+.card {
+    background: white;
+    border: 1px solid #e5eaf2;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 8px 25px #172a4510;
+}
+
+.card h3 {
+    font-size: 19px;
+    margin: 12px 0 9px;
+}
+
+.card p {
+    color: var(--muted);
+    font-size: 15px;
+}
+
+.icon {
+    width: 49px;
+    height: 49px;
+    display: grid;
+    place-items: center;
+    background: #eaf1ff;
+    color: var(--blue);
+    border-radius: 14px;
+    font-size: 24px;
+}
+
+.soft-section {
+    background: #eaf0f8;
+}
+
+.comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin: 30px 0;
+}
+
+.example {
+    background: white;
+    border: 1px solid #dce4ef;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.example-visual {
+    min-height: 235px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 25px;
+    background:
+        radial-gradient(circle at 70% 20%, #d8e8ff, transparent 35%),
+        linear-gradient(145deg, #edf3fc, #dce6f4);
+}
+
+.example-visual.ai {
+    background:
+        radial-gradient(circle at 30% 25%, #f1dafa, transparent 40%),
+        linear-gradient(145deg, #eee8ff, #dce5fb);
+}
+
+.sample {
+    width: 132px;
+    height: 132px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 70px;
+    background: #ffffffb8;
+    border: 3px solid white;
+    box-shadow: 0 10px 30px #253c641c;
+}
+
+.example-content {
+    padding: 23px;
+}
+
+.tag {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 20px;
+    padding: 5px 10px;
+    margin-bottom: 12px;
+}
+
+.tag-real {
+    background: #dff6ed;
+    color: #14694f;
+}
+
+.tag-ai {
+    background: #eee4ff;
+    color: #6740a3;
+}
+
+.example-content h3 {
+    margin-bottom: 8px;
+}
+
+.example-content p {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.notice {
+    border-left: 4px solid var(--blue);
+    background: white;
+    padding: 19px 22px;
+    border-radius: 0 12px 12px 0;
+    margin-top: 25px;
+}
+
+.notice strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.notice p {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.steps {
+    counter-reset: step;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.step {
+    counter-increment: step;
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
+    border: 1px solid #e4eaf3;
+}
+
+.step h3::before {
+    content: counter(step, decimal-leading-zero);
+    display: inline-grid;
+    place-items: center;
+    background: var(--navy);
+    color: var(--cyan);
+    border-radius: 9px;
+    width: 37px;
+    height: 37px;
+    font-size: 13px;
+    margin-right: 10px;
+}
+
+.step p {
+    color: var(--muted);
+    margin-top: 12px;
+    font-size: 15px;
+}
+
+.quiz-box {
+    max-width: 760px;
+    margin: auto;
+    background: white;
+    border-radius: 24px;
+    padding: clamp(22px, 5vw, 42px);
+    box-shadow: 0 12px 40px #172a4510;
+}
+
+.quiz-progress {
+    height: 7px;
+    background: #e7edf5;
+    border-radius: 20px;
+    margin: 20px 0 28px;
+    overflow: hidden;
+}
+
+.quiz-progress div {
+    height: 100%;
+    width: 0;
+    background: var(--blue);
+    transition: width .3s;
+}
+
+.quiz-option {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: #f7f9fc;
+    border: 1px solid #dce4ef;
+    padding: 14px 17px;
+    border-radius: 12px;
+    margin-top: 10px;
+    color: var(--ink);
+}
+
+.quiz-option:hover:not(:disabled) {
+    border-color: var(--blue);
+    background: #edf3ff;
+}
+
+.quiz-option:disabled {
+    cursor: default;
+    opacity: 1;
+}
+
+.quiz-option.correct {
+    background: #e0f7eb;
+    border-color: var(--green);
+}
+
+.quiz-option.wrong {
+    background: #ffeded;
+    border-color: var(--red);
+}
+
+#feedback {
+    margin-top: 18px;
+    color: var(--muted);
+}
+
+#next {
+    margin-top: 20px;
+    display: none;
+    background: var(--blue);
+    color: white;
+}
+
+#result {
+    display: none;
+    margin-top: 20px;
+}
+
+.checklist {
+    list-style: none;
+}
+
+.checklist li {
+    padding: 12px 0;
+    border-bottom: 1px solid #e8edf4;
+}
+
+.checklist li::before {
+    content: "✓";
+    color: var(--green);
+    font-weight: bold;
+    margin-right: 12px;
+}
+
+.conclusion {
+    background: var(--navy);
+    color: white;
+    border-radius: 22px;
+    padding: 35px;
+}
+
+.conclusion p {
+    color: #d4deed;
+    margin-top: 15px;
+}
+
+footer {
+    background: #0e192a;
+    color: #bdc9db;
+    padding: 35px 0;
+    font-size: 13px;
+}
+
+.footer-inner {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 760px) {
+    .navbar {
+        padding: 18px 0;
+        flex-direction: column;
+    }
+
+    nav {
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .comparison, .steps {
+        grid-template-columns: 1fr;
+    }
+
+    .hero {
+        padding: 70px 0;
+    }
+
+    section {
+        padding: 55px 0;
+    }
+
+    .btn-secondary {
+        margin: 12px 0 0;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="container navbar">
+        <a class="logo" href="#home">◈ ЦИФРОВОЙ ДЕТЕКТИВ</a>
+        <nav aria-label="Основная навигация">
+            <a href="#about">О дипфейках</a>
+            <a href="#signs">Признаки</a>
+            <a href="#examples">Примеры</a>
+            <a href="#quiz">Тест</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+<section class="hero" id="home">
+    <div class="container">
+        <span class="eyebrow">ШКОЛЬНЫЙ ОБРАЗОВАТЕЛЬНЫЙ ПРОЕКТ</span>
+        <h1>Правда или <span>обман?</span><br>Учимся распознавать дипфейки</h1>
+        <p>
+            Искусственный интеллект умеет создавать убедительные
+            фотографии, видео и голоса. Узнай, как проверять
+            цифровой контент и не попадаться на уловки.
+        </p>
+        <a class="btn btn-primary" href="#about">Начать исследование →</a>
+        <a class="btn btn-secondary" href="#quiz">Проверить себя</a>
+        <div class="hero-note">
+            Медиаграмотность • Цифровая безопасность • Критическое мышление
+        </div>
+    </div>
+</section>
+
+<section id="about">
+    <div class="container">
+        <div class="section-label">01 / Знакомство</div>
+        <h2 class="section-title">Что такое дипфейк?</h2>
+        <p class="section-intro">
+            Дипфейк — это изображение, видео или аудиозапись,
+            созданные либо изменённые с помощью искусственного
+            интеллекта так, чтобы имитировать реальность.
+            Например, на видео человек может произносить слова,
+            которых никогда не говорил.
+        </p>
+
+        <div class="grid">
+            <article class="card">
+                <div class="icon">🖼️</div>
+                <h3>Поддельные изображения</h3>
+                <p>ИИ создаёт несуществующих людей, предметы и целые сцены, которые выглядят как фотографии.</p>
+            </article>
+            <article class="card">
+                <div class="icon">🎬</div>
+                <h3>Изменённые видео</h3>
+                <p>Технологии могут менять лицо человека, движения губ и выражение лица.</p>
+            </article>
+            <article class="card">
+                <div class="icon">🎙️</div>
+                <h3>Поддельные голоса</h3>
+                <p>Синтезированный голос может имитировать знакомого человека и произносить новые фразы.</p>
+            </article>
+        </div>
+
+        <div class="notice">
+            <strong>Важно понимать</strong>
+            <p>Не каждый контент, созданный ИИ, является обманом. Проблема возникает, когда его выдают за подлинный материал или используют для введения людей в заблуждение.</p>
+        </div>
+    </div>
+</section>
+
+<section class="soft-section" id="signs">
+    <div class="container">
+        <div class="section-label">02 / Наблюдение</div>
+        <h2 class="section-title">На что обратить внимание?</h2>
+        <p class="section-intro">
+            Рассматривая изображение, не делай вывод по одному признаку.
+            Ищи несколько несоответствий и проверяй происхождение материала.
+        </p>
+
+        <div class="grid">
+            <article class="card">
+                <div class="icon">👁️</div>
+                <h3>Глаза и лицо</h3>
+                <p>Присмотрись к контурам лица, зубам, ушам и украшениям. Иногда они выглядят неестественно или меняются между кадрами.</p>
+            </article>
+            <article class="card">
+                <div class="icon">✋</div>
+                <h3>Кисти и пальцы</h3>
+                <p>Проверь количество пальцев, их соединение и положение. Генераторы иногда допускают анатомические ошибки.</p>
+            </article>
+            <article class="card">
+                <div class="icon">💡</div>
+                <h3>Свет и тени</h3>
+                <p>Посмотри, соответствует ли направление теней источнику света и одинаково ли освещены соседние предметы.</p>
+            </article>
+            <article class="card">
+                <div class="icon">🪞</div>
+                <h3>Отражения</h3>
+                <p>Проверь зеркала, стёкла и блестящие поверхности. Отражение иногда не совпадает с окружающей сценой.</p>
+            </article>
+            <article class="card">
+                <div class="icon">🔤</div>
+                <h3>Надписи и детали</h3>
+                <p>Буквы на вывесках, мелкие узоры и фон могут быть искажены или содержать бессмысленные символы.</p>
+            </article>
+            <article class="card">
+                <div class="icon">🔎</div>
+                <h3>Источник изображения</h3>
+                <p>Найди первоначальную публикацию, проверь дату, автора и подтверждение события в независимых источниках.</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section id="examples">
+    <div class="container">
+        <div class="section-label">03 / Практическое исследование</div>
+        <h2 class="section-title">Сравниваем примеры</h2>
+        <p class="section-intro">
+            Ниже представлены учебные иллюстрации, а не реальные
+            фотографии. Они показывают, какие детали стоит проверять.
+            Для настоящего исследования добавь проверенные изображения
+            и укажи источники.
+        </p>
+
+        <div class="comparison">
+            <article class="example">
+                <div class="example-visual">
+                    <div class="sample">📷</div>
+                </div>
+                <div class="example-content">
+                    <span class="tag tag-real">УЧЕБНЫЙ ПРИМЕР</span>
+                    <h3>Фотография реального объекта</h3>
+                    <p>При проверке настоящей фотографии также изучают освещение, пропорции, детали фона и историю публикации. Одна лишь реалистичность ничего не доказывает.</p>
+                </div>
+            </article>
+
+            <article class="example">
+                <div class="example-visual ai">
+                    <div class="sample">✨</div>
+                </div>
+                <div class="example-content">
+                    <span class="tag tag-ai">УЧЕБНЫЙ ПРИМЕР</span>
+                    <h3>Изображение, созданное ИИ</h3>
+                    <p>При генерации могут возникать странные детали, несогласованные отражения или искажённые надписи. Однако современные модели часто избегают таких ошибок.</p>
+                </div>
+            </article>
+        </div>
+
+        <div class="notice">
+            <strong>Как провести честное сравнение?</strong>
+            <p>Возьми фотографию с известным источником и изображение, созданное генератором ИИ. Сравни детали, подпиши происхождение каждого изображения и объясни, что удалось обнаружить. Не называй материал поддельным без достаточных доказательств.</p>
+        </div>
+
+        <h2 class="section-title" style="margin-top:50px">Пример анализа: рука на изображении</h2>
+
+        <div class="comparison">
+            <article class="card">
+                <div class="icon">✋</div>
+                <h3>Что можно увидеть</h3>
+                <p>Пальцы соединены естественно, суставы расположены правдоподобно, а рука соответствует перспективе сцены.</p>
+            </article>
+            <article class="card">
+                <div class="icon">🔬</div>
+                <h3>Что нужно проверить</h3>
+                <p>Нет ли лишних или сросшихся пальцев, странных изгибов и несоответствия между рукой и предметом, который она держит.</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="soft-section" id="check">
+    <div class="container">
+        <div class="section-label">04 / Проверка информации</div>
+        <h2 class="section-title">Как проверить подозрительное фото или видео?</h2>
+        <p class="section-intro">
+            Используй последовательный алгоритм, прежде чем
+            отправлять материал другим людям или публиковать его.
+        </p>
+
+        <div class="steps">
+            <article class="step">
+                <h3>Найди первоисточник</h3>
+                <p>Узнай, кто первым опубликовал изображение. Проверь дату, подпись и контекст события.</p>
+            </article>
+            <article class="step">
+                <h3>Выполни обратный поиск</h3>
+                <p>Используй поиск по изображению, чтобы найти более ранние публикации или исходную фотографию.</p>
+            </article>
+            <article class="step">
+                <h3>Изучи детали</h3>
+                <p>Увеличь изображение и проверь руки, лицо, фон, освещение, надписи и отражения.</p>
+            </article>
+            <article class="step">
+                <h3>Сравни источники</h3>
+                <p>Проверь, подтверждают ли событие надёжные независимые СМИ, официальные сообщения или первичные документы.</p>
+            </article>
+            <article class="step">
+                <h3>Проверь видео и звук</h3>
+                <p>Обрати внимание на синхронизацию губ, резкие переходы и неестественные изменения голоса. Эти признаки не являются окончательным доказательством.</p>
+            </article>
+            <article class="step">
+                <h3>Не спеши с выводами</h3>
+                <p>Автоматические детекторы ИИ могут ошибаться. Если достоверность не подтверждена, обозначь её как неизвестную.</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section id="quiz">
+    <div class="container">
+        <div class="section-label">05 / Самопроверка</div>
+        <h2 class="section-title">Проверь свои знания</h2>
+        <p class="section-intro">Ответь на пять вопросов и узнай, насколько хорошо ты усвоил материал.</p>
+
+        <div class="quiz-box">
+            <div id="counter">Вопрос 1 из 5</div>
+            <div class="quiz-progress"><div id="progress"></div></div>
+            <h3 id="question"></h3>
+            <div id="answers"></div>
+            <p id="feedback" aria-live="polite"></p>
+            <button class="btn" id="next">Следующий вопрос →</button>
+            <div id="result">
+                <h3 id="result-title"></h3>
+                <p id="result-text"></p>
+                <button class="btn" id="restart">Пройти ещё раз</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="conclusion">
+    <div class="container">
+        <div class="conclusion">
+            <div class="section-label">Итоги проекта</div>
+            <h2 class="section-title">Думай критически. Проверяй факты.</h2>
+            <p>
+                Искусственный интеллект открывает новые возможности,
+                но одновременно усложняет проверку информации.
+                Внимательность, проверка первоисточников и сравнение
+                независимых данных помогают снизить риск обмана.
+            </p>
+            <p>
+                Главный вывод: по одному визуальному признаку нельзя
+                достоверно определить происхождение изображения.
+                Ответственное отношение к информации начинается
+                с вопроса: «Какие доказательства подтверждают это?»
+            </p>
+        </div>
+    </div>
+</section>
+</main>
+
+<footer>
+    <div class="container footer-inner">
+        <span>Цифровой детектив — школьный образовательный проект</span>
+        <span>Развивай медиаграмотность и проверяй информацию</span>
+    </div>
+</footer>
+
+<script>
+const questions = [
+    {
+        q: "Что такое дипфейк?",
+        a: [
+            "Любая фотография, сделанная телефоном",
+            "Материал, созданный или изменённый с помощью ИИ для имитации реальности",
+            "Только компьютерная игра"
+        ],
+        correct: 1,
+        info: "Дипфейки используют ИИ для создания или изменения изображений, видео и аудио."
+    },
+    {
+        q: "На что стоит обратить внимание при анализе изображения?",
+        a: [
+            "Только на его яркость",
+            "Только на количество цветов",
+            "На детали, освещение, источник и контекст"
+        ],
+        correct: 2,
+        info: "Нужно учитывать несколько признаков и проверять происхождение материала."
+    },
+    {
+        q: "Доказывает ли странная кисть руки, что изображение создано ИИ?",
+        a: [
+            "Нет, необходима дополнительная проверка",
+            "Да, всегда",
+            "Да, если изображение цветное"
+        ],
+        correct: 0,
+        info: "Ошибки бывают и на обычных фотографиях, а ИИ может создавать реалистичные руки."
+    },
+    {
+        q: "Что делать, если фотография кажется подозрительной?",
+        a: [
+            "Сразу переслать всем знакомым",
+            "Проверить первоисточник и сравнить независимые сведения",
+            "Считать её настоящей, если она качественная"
+        ],
+        correct: 1,
+        info: "Проверка источника и независимых подтверждений надёжнее поспешных выводов."
+    },
+    {
+        q: "Можно ли полностью доверять автоматическому детектору ИИ?",
+        a: [
+            "Да, он никогда не ошибается",
+            "Да, если изображение красивое",
+            "Нет, результат нужно проверять другими способами"
+        ],
+        correct: 2,
+        info: "Детекторы могут ошибаться, поэтому их результат не следует считать окончательным доказательством."
+    }
+];
+
+let current = 0;
+let score = 0;
+let answered = false;
+
+const questionEl = document.getElementById("question");
+const answersEl = document.getElementById("answers");
+const feedbackEl = document.getElementById("feedback");
+const nextBtn = document.getElementById("next");
+const resultEl = document.getElementById("result");
+
+function renderQuestion() {
+    answered = false;
+    const item = questions[current];
+
+    document.getElementById("counter").textContent =
+        `Вопрос ${current + 1} из ${questions.length}`;
+
+    document.getElementById("progress").style.width =
+        `${(current / questions.length) * 100}%`;
+
+    questionEl.textContent = item.q;
+    answersEl.replaceChildren();
+    feedbackEl.textContent = "";
+    nextBtn.style.display = "none";
+    resultEl.style.display = "none";
+    questionEl.style.display = "block";
+    answersEl.style.display = "block";
+
+    item.a.forEach((answer, index) => {
+        const button = document.createElement("button");
+        button.className = "quiz-option";
+        button.textContent = answer;
+        button.addEventListener("click", () => chooseAnswer(index));
+        answersEl.appendChild(button);
+    });
+}
+
+function chooseAnswer(index) {
+    if (answered) return;
+    answered = true;
+
+    const item = questions[current];
+    const buttons = answersEl.querySelectorAll("button");
+
+    buttons.forEach((button, i) => {
+        button.disabled = true;
+        if (i === item.correct) button.classList.add("correct");
+        if (i === index && i !== item.correct) {
+            button.classList.add("wrong");
+        }
+    });
+
+    if (index === item.correct) {
+        score++;
+        feedbackEl.textContent = "Верно! " + item.info;
+    } else {
+        feedbackEl.textContent = "Не совсем. " + item.info;
+    }
+
+    nextBtn.textContent =
+        current === questions.length - 1
+            ? "Посмотреть результат"
+            : "Следующий вопрос →";
+
+    nextBtn.style.display = "inline-block";
+}
+
+nextBtn.addEventListener("click", () => {
+    if (current < questions.length - 1) {
+        current++;
+        renderQuestion();
+    } else {
+        questionEl.style.display = "none";
+        answersEl.style.display = "none";
+        feedbackEl.textContent = "";
+        nextBtn.style.display = "none";
+        resultEl.style.display = "block";
+
+        document.getElementById("progress").style.width = "100%";
+        document.getElementById("counter").textContent = "Тест завершён";
+        document.getElementById("result-title").textContent =
+            `Твой результат: ${score} из ${questions.length}`;
+
+        document.getElementById("result-text").textContent =
+            score === 5
+                ? "Отлично! Ты хорошо усвоил материал."
+                : score >= 3
+                    ? "Хороший результат! Повтори несколько разделов."
+                    : "Не расстраивайся. Изучи материалы ещё раз и попробуй снова.";
+    }
+});
+
+document.getElementById("restart").addEventListener("click", () => {
+    current = 0;
+    score = 0;
+    renderQuestion();
+});
+
+renderQuestion();
+</script>
+
+</body>
+</html>
